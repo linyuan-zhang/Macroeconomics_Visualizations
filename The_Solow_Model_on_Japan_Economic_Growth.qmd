@@ -223,7 +223,7 @@ In this section, we look at the trends for Population Growth Rate (which is simi
 
 ## Data
 
-The data for $x$, $s$, $\psi$, and $\phi$ are provided by Professor Erin Cottle Hunt in an Excel spreadsheet.
+The data for $x$, $s$, $\psi$, and $\phi$ are provided by Professor Erin Cottle Hunt in an Excel spreadsheet. Similar data, especially that of TFP (growth rate) can be found in FRED or World Bank database, but the data do not extend as early as 1950, which is the start year of Professor Erin Cottle Hunt's data.
 
 In the Excel file, we delete the second row, which has no observation.
 
