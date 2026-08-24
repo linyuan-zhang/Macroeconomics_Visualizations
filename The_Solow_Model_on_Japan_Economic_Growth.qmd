@@ -46,7 +46,7 @@ There are multiple Real GDP data for both Japan and United States in the FRED da
 
 The data series below are Real GDP at Constant National Prices for United States and Real GDP at Constant National Prices for Japan. Both are provided by Groningen Growth and Development Centre, and that they are provided by the same organization makes the data good for cross-country comparative analysis. The data series are annual.
 
-The series' names in the FRED database are `RGDPNAUSA666NRUG` and `RGDPNAJPA666NRUG`, respectively.
+The series' codes in the FRED database are `RGDPNAUSA666NRUG` and `RGDPNAJPA666NRUG`, respectively.
 
 To obtain the URLs from which to load the CSV format data, find the page of the data series, find "Download", find "CSV (data)", and copy the link address for "CSV (data)".
 
