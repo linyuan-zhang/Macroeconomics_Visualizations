@@ -60,7 +60,7 @@ usa_rgdp_groningen <- read.csv("https://fred.stlouisfed.org/graph/fredgraph.csv?
 jpa_rgdp_groningen <- read.csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23ebf3fb&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=off&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=RGDPNAJPA666NRUG&scale=left&cosd=1950-01-01&coed=2099-12-31&line_color=%230073e6&link_values=false&line_style=solid&mark_type=none&mw=3&lw=3&ost=-99999&oet=99999&mma=0&fml=a&fq=Annual&fam=avg&fgst=lin&fgsnd=2099-12-31&line_index=1&transformation=lin&nd=1950-01-01")
 ```
 
-If we want to have data series that end at some year closer to the present (`2026`), use the data series Real Gross Domestic Product and Real Gross Domestic Product for Japan. The former is provided by U.S. Bureau of Economic Analysis, and the latter by Cabinet Office of Japan. The data series are both seasonal.
+If we want to have data series that end at some year closer to the present (`2026`), use the data series Real Gross Domestic Product and Real Gross Domestic Product for Japan. The former is provided by U.S. Bureau of Economic Analysis, and the latter by Cabinet Office of Japan. The data series are both quarterly.
 
 The series' names in the FRED database are `GDPC1` and `JPNRGDPEXP`, respectively.
 
@@ -72,7 +72,7 @@ usa_rgdp_bureau <-read.csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgco
 jpa_rgdp_cabinet <-read.csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23ebf3fb&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=off&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=JPNRGDPEXP&scale=left&cosd=1994-01-01&coed=2099-12-31&line_color=%230073e6&link_values=false&line_style=solid&mark_type=none&mw=3&lw=3&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2099-12-31&line_index=1&transformation=lin&nd=1994-01-01")
 ```
 
-To convert the above two data series from seasonal to annual, use the following code. Or, we can just `merge` the two data series with some annual data series.
+To convert the above two data series from quarterly to annual, use the following code. Or, we can just `merge` the two data series with some annual data series.
 
 ```{r}
 usa_rgdp_bureau <- usa_rgdp_bureau %>% 
