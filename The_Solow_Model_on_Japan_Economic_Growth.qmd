@@ -1,6 +1,6 @@
 ---
 title: "The Solow Model on Japan Economic Growth"
-format: pdf
+format: html
 editor: visual
 ---
 
@@ -50,7 +50,7 @@ The series' codes in the FRED database are `RGDPNAUSA666NRUG` and `RGDPNAJPA666N
 
 To obtain the URLs from which to load the CSV format data, find the page of the data series, find "Download", find "CSV (data)", and copy the link address for "CSV (data)".
 
-When loading, set the end year of the data series to be `2099` so that the data is always up-to-date.
+When loading, modify the URL by resetting the current dates to `2099/12/31` so that the data is always up-to-date.
 
 The current data series end at `2023`.
 

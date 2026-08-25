@@ -1,0 +1,191 @@
+---
+title: "304 Phillip's Curve Exercise"
+format: html
+---
+
+This notebook is based on an Excel homework for Professor Erin Cottle Hunt's Intermediate Macroeconomics.
+
+This notebook plots a joined result of Phillip's Curve (the relationship between Unemployment and Inflation) and Okun's Law (the relationship between Unemployment and Short-Run Real GDP). The plots are relationships between (United States') Short-Run Real GDP and Inflation, with the former on the $x$-axis and the latter $y$ axis. The plots demonstrates that there is a positive relationship between Short-Run Real GDP and Inflation. The data used are real GDP, real potential GDP and inflation of the United States, from 1971 onwards.
+
+There is a tutorial in R and a tutorial in Python, providing the same computations and visualizations.
+
+Load R library.
+
+```{r, message = FALSE}
+library(tidyverse)
+
+library(lubridate)
+```
+
+## Data
+
+To calculate Short-Run Real GDP, we need Real GDP and Real Potentional GDP. Short-Run Real GDP, aka. the output gap, is the percentage difference between Real GDP and Real Potential GDP.
+
+The data for United States' Real GDP and Real Potential GDP can be found in the FRED database.
+
+The series' codes in the FRED database are `GDPC1` and `GDPPOT`, respectively.
+
+To obtain the URLs from which to load the CSV format data, find the page of the data series, find "Download", find "CSV (data)", and copy the link address for "CSV (data)".
+
+When loading, modify the URL by resetting the current dates to 2099/12/31 so that the data is always up-to-date.
+
+The data are quarterly. The current Real GDP series starts at the first quarter of `1976` and ends at the second quarter of `2026`. The current Real Potential GDP series starts at the first quarter of `1976` and ends at the fourth quarter of `2036`.
+
+```{r}
+rgdp <- read.csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23ebf3fb&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=GDPC1&scale=left&cosd=1976-01-01&coed=2099-12-31&line_color=%230073e6&link_values=false&line_style=solid&mark_type=none&mw=3&lw=3&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2099-12-31&line_index=1&transformation=lin&nd=1976-01-01")
+
+rgdppot <- read.csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23ebf3fb&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=GDPPOT&scale=left&cosd=1976-01-01&coed=2099-12-31&line_color=%230073e6&link_values=false&line_style=solid&mark_type=none&mw=3&lw=3&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2099-12-31&line_index=1&transformation=lin&nd=1976-01-01")
+```
+
+We also need data for United States' inflation. The series' code is `CPALTT01USM661S`.
+
+The data is monthly. The series starts at January `1976` and ends at March `2024`.
+
+```{r}
+inflation <- read.csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23ebf3fb&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=CPALTT01USM657N&scale=left&cosd=1976-01-01&coed=2099-12-31&line_color=%230073e6&link_values=false&line_style=solid&mark_type=none&mw=3&lw=3&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2099-12-31&line_index=1&transformation=lin&nd=1976-01-01")
+```
+
+### Data Cleaning
+
+To document the relationships, we `inner` `merge` all requisite data into one dataset.
+
+When we `merge` two datasets containing different series, the `merge` function in `pandas`, when `how` set to `inner` and `on` set to `observation_date`, keeps only entries with the same date. Therefore, if we `merge` the three series, the start time will be the first quarter of `1976` and the end time will be the first quarter of `2024`. All data will be quarterly.
+
+```{r}
+df <- merge(rgdp, rgdppot)
+
+df <- merge(df, inflation)
+```
+
+Rename the columns for better comprehension.
+
+```{r}
+colnames(df) <- c("quarter", "rgdp", "rgdppot", "inflation")
+```
+
+Because we eventually want to filter the data by `year`, we use the following code to separate the `year` and `quarter` of the dates.
+
+```{r}
+df <- df %>%
+    mutate(
+    quarter = ymd(quarter),
+    year = year(quarter),
+    quarter = quarter(quarter)
+    )
+```
+
+### Calculation
+
+Calculate Short-Run Real GDP.
+
+```{r}
+df <- df %>% 
+    mutate(rgdpsh = (rgdp - rgdppot)/((rgdp + rgdppot)/2) * 100)
+```
+
+### Filtering
+
+We want to create the Short-Run Real GDP versus Inflation plots for the following times:
+
+A. Until 2008 (the year of Global Financial Crisis), including 2008;
+
+B. After 2008 and including 2020 (the year COVID-19 took place), excluding 2008;
+
+C. After 2008 and excluding 2020.
+
+Therefore, we filter the dataset we have created into three separate datasets.
+
+```{r}
+df_phillips_1976_2008 <- df %>%
+    filter(year <= 2008)
+
+df_phillips_2009_ <- df %>%
+    filter(year > 2008)
+
+df_phillips_2009_no_2020 <- df %>%
+    filter(year > 2008 & year != 2020)
+```
+
+## Visualization
+
+Plot the relationship between Short-Run Real GDP and Inflation (most early-most recent).
+
+```{r, message = FALSE}
+Phillips_and_Okun <- df %>% ggplot(aes(x = rgdpsh, y = inflation)) +
+  geom_point(aes(color = year)) +
+  scale_color_gradient(low = "cyan", high = "magenta") +
+  geom_smooth(method = "lm", se = FALSE, color = "grey") + 
+  theme_bw() +
+  scale_y_continuous(limits = c(-1.5, 1.5), 
+                     breaks = c(seq(-1.5, 1.5, by = 0.5))) +
+  scale_x_continuous(limits = c(-10, 3), 
+                     breaks = c(seq(-8, 2, by = 2)))
+
+Phillips_and_Okun
+```
+
+Plot the relationship between Short-Run Real GDP and Inflation (1971-2008, inclusive).
+
+```{r, message = FALSE}
+Phillips_and_Okun_1976_2008 <- df_phillips_1976_2008 %>% ggplot(aes(x = rgdpsh, y = inflation)) +
+  geom_point(aes(color = year)) +
+  scale_color_gradient(low = "cyan", high = "magenta") +
+  geom_smooth(method = "lm", se = FALSE, color = "grey") + 
+  theme_bw() +
+  scale_y_continuous(limits = c(-1.5, 1.5), 
+                     breaks = c(seq(-1.5, 1.5, by = 0.5))) +
+  scale_x_continuous(limits = c(-10, 3), 
+                     breaks = c(seq(-8, 2, by = 2)))
+
+Phillips_and_Okun_1976_2008
+```
+
+Plot the relationship between Short-Run Real GDP and Inflation (2009-most recent, including 2020).
+
+```{r, message = FALSE, warning = FALSE}
+Phillips_and_Okun_2009_ <- df_phillips_2009_ %>% ggplot(aes(x = rgdpsh, y = inflation)) +
+  geom_point(aes(color = year)) +
+  scale_color_gradient(low = "cyan", high = "magenta") +
+  geom_smooth(method = "lm", se = FALSE, color = "grey") + 
+  theme_bw() +
+  scale_y_continuous(limits = c(-1.5, 1.5), 
+                     breaks = c(seq(-1.5, 1.5, by = 0.5))) +
+  scale_x_continuous(limits = c(-10, 3), 
+                     breaks = c(seq(-8, 2, by = 2)))
+
+Phillips_and_Okun_2009_
+```
+
+Plot the relationship between Short-Run Real GDP and Inflation (2009-most recent, excluding 2020).
+
+```{r, message = FALSE, warning = FALSE}
+Phillips_and_Okun_2009_no_2020 <- df_phillips_2009_no_2020 %>% ggplot(aes(x = rgdpsh, y = inflation)) +
+  geom_point(aes(color = year)) +
+  scale_color_gradient(low = "cyan", high = "magenta") +
+  geom_smooth(method = "lm", se = FALSE, color = "grey") + 
+  theme_bw() +
+  scale_y_continuous(limits = c(-1.5, 1.5), 
+                     breaks = c(seq(-1.5, 1.5, by = 0.5))) +
+  scale_x_continuous(limits = c(-10, 3), 
+                     breaks = c(seq(-8, 2, by = 2)))
+
+Phillips_and_Okun_2009_no_2020
+```
+
+## Conclusion
+
+According to Phillip's Curve, there is a negative relationship between Unemployment and Inflation. According to Okun's Law, there is a negative relationship between Unemployment and Short-Run Real GDP. Therefore, there should be a positive relationship between Short-Run Real GDP and Inflation.
+
+In the four plots, we observe a positive relationship between Short-Run Real GDP. This observation verifies the theory.
+
+The following is the conclusion from the second plot:
+
+Until 2008, the inflation was stable, as is demonstrated by the almost-flat line. Short-run real GDP was growing, because we see the blue dots clustered on the left and the purple dots clustered on the right. There is an outlier at the bottom-right. Its pink color indicates that it was of a time very close to 2008. This outlier represents that during the Global Financial Crisis, there was much deflation.
+
+The following is the conclusion from the fourth plot:
+
+After 2008, the inflation has in general risen steadily, and the relationship between short-run real GDP and inflation is more positive than until 2008. Similar to until 2008, short-run real GDP grows, because of the positions of blue dots and purple dots.
+
+The third plot adds the data points representing the COVID year into the third plot. The COVID year is represented by a far-away outlier at the bottom-left of the plot. During the COVID year, there was negative short-run real GDP because production was paused. There was also deflation.
+
+The first plot exhibits all data from 1971. It is more similar to the second plot. Because United States' real GDP growth rate before 2008 is higher than after 2008, on the left side of the plot, we see some overlapping between blue dots and purple dots, and on the right side of the plot, we see some overlapping between blue dots and pink dots.
