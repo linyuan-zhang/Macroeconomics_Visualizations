@@ -5,7 +5,7 @@ format: html
 
 This notebook is based on an Excel homework for Professor Erin Cottle Hunt's Intermediate Macroeconomics.
 
-This notebook plots a joined result of Phillip's Curve (the relationship between Unemployment and Inflation) and Okun's Law (the relationship between Unemployment and Short-Run Real GDP). The plots are relationships between (United States') Short-Run Real GDP and Inflation, with the former on the $x$-axis and the latter $y$ axis. The plots demonstrates that there is a positive relationship between Short-Run Real GDP and Inflation. The data used are real GDP, real potential GDP and inflation of the United States, from 1971 onwards.
+This notebook plots a joined result of Phillip's Curve (the relationship between Unemployment and Inflation) and Okun's Law (the relationship between Unemployment and Short-Run Real GDP). The plots are relationships between (United States') Short-Run Real GDP and Inflation, with the former on the $x$-axis and the latter $y$-axis. The plots demonstrates that there is a positive relationship between Short-Run Real GDP and Inflation. The data used are real GDP, real potential GDP and inflation of the United States, from 1971 onwards.
 
 There is a tutorial in R and a tutorial in Python, providing the same computations and visualizations.
 
