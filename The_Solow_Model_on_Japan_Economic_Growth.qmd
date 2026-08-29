@@ -4,6 +4,8 @@ format: html
 editor: visual
 ---
 
+To run this qmd file, one must put a spreadsheet (Model_Inputs) of Professor Erin Cottle Hunt's into the same folder where one put this qmd file.
+
 This project is based on an Excel project for Professor Erin Cottle Hunt's ECON 314 Macroeconomic Theory.
 
 This project uses macroeconomic data from FRED. Using counterfactual analysis and simulation, this project demonstrates that in the Solow model, total factor productivity is the element that mainly drives (Japan) economic growth trend, and provides visualizations. It also incorporates a very brief economic history of post-World-War-II Japan.
